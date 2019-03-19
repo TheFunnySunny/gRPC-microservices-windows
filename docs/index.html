@@ -28,22 +28,22 @@
         <div class="header">
             <h1>Main goal of this aricle</h1>
         </div>
-        We are going to create a bunch of <b>gRPC microservices</b> from scratch in <b>C#, C++, Go</b>and <b>RUST.</b> <br/> All code that I post here will be availabe together with all other files and solution on my <a href="https://github.com/TheFunnySunny/gRPC-microservices-windows"><b>Github repository.</b></a>
+        We are going to create a bunch of <b>gRPC microservices</b> from scratch in <b>C#, C++, Go</b> and <b>RUST.</b> <br/> All code that I post here will be availabe together with all other files and solution on my <a href="https://github.com/TheFunnySunny/gRPC-microservices-windows"><b>Github repository.</b></a>
         <div class="ending_text">
             <b>Enough talking, lets get started!</b>
         </div>
     </div>
     <div class="grpc">
         <div class="header">
-            <h1>gRPC for life</h1>
+            <h1>gRPC for better sanity</h1>
         </div>
-        So from my point of view gRPS (general Remote Procedural Calls) as a technique is better than any other at the level of design. If you have read the main page of gRPC you probably know that it is easy to distribute everything once you have defined Your PROTO file and stuff like that (more on that in a while).<br/><br/>For me as for someone who had to test performane of gRPC it is as fast as other protocols (well, HTTP2 actually) and much more beautiful and easier to make. But hey, You've chosen it already so I do not have to talk about it, but I will leave a<a href="https://grpc.io/docs/guides/">link</a>for You if you want to jump onto definitions.
+        So from my point of view <b>gRPC (general Remote Procedural Calls)</b> as a technique is better than any other at the level of design. If you have read the main page of gRPC you probably know that it is easy to distribute everything once you have defined Your PROTO file and stuff like that (more on that in a while).<br/><br/>For me as for someone who had to test performane of gRPC it is as fast as other protocols (well, HTTP2 actually) and much more beautiful and easier to make. But hey, You've chosen it already so I do not have to talk about it, but I will leave a <a href="https://grpc.io/docs/guides/">link</a> for You if you want to jump onto definitions.
     </div>
     <div class="protobuf">
         <div class="header">
             <h1>Creating Your proto file</h1>
         </div>
-        Okay, lets actually get started. A<i><b>proto</b></i>file is something where all the magic of gRPC happens. Let me actually show You a simple<i><b>proto</b></i>file that we will be working with along this article. It is actually nearly the same as in the examples from gRPC tutorials but we want to keep it simple for now.
+        Okay, lets actually get started. A <i><b>proto</b></i> file is something where all the magic of gRPC happens. Let me actually show You a simple <i><b>proto</b></i> file that we will be working with along this article. It is actually nearly the same as in the examples from gRPC tutorials but we want to keep it simple for now.
         <pre><code class="language-pascal">
         syntax = "proto3";
 
@@ -64,34 +64,34 @@
         string message = 1;
         }
         </code></pre>
-        Writing proto files is actually pretty simple, I will post my<a href="">simple c++ console communicator</a>created with gRPC so You can take a look at different definition of a protofile.<br/><br/>
+        Writing proto files is actually pretty simple, I will post my <a href="">simple c++ console communicator</a> created with gRPC so You can take a look at different definition of a protofile.<br/><br/>
         So by looking at the code we can actually see what is going to happend but there are several things to point out so let me do that real quick:<br/>
         <ol>
-            <li><b>syntax = "proto3"</b>specifies which version of proto we will be using (there is version 3 right know, have You ever heard of previous 2 tho?),</li>
-            <li><b>package Talk</b>acts like a<i>namespace</i>in C# or C++,</li>
-            <li><b>service Greeter</b> creates a<b>class</b>with name<b>Greeter</b>. You can pick any name You want and You can have multiple<i>services</i>(<b>classes</b>) in one proto file, </li>
-            <li>This line: <b>rpc SayHello (HelloRequest) returns (HelloReply) {}</b>is actually a casual method definition (or a function, You choose which term You like). Lets split it into a few parts: 
+            <li><b>syntax = "proto3"</b> specifies which version of proto we will be using (there is version 3 right know, have You ever heard of previous 2 tho?),</li>
+            <li><b>package Talk</b> acts like a<i>namespace</i>in C# or C++,</li>
+            <li><b>service Greeter</b> creates a <b>class</b> with name <b>Greeter</b>. You can pick any name You want and You can have multiple<i>services</i> (<b>classes</b>) in one proto file, </li>
+            <li>This line: <b>rpc SayHello (HelloRequest) returns (HelloReply) {}</b> is actually a casual method definition (or a function, You choose which term You like). Lets split it into a few parts: 
                 <ul>
-                    <li>We start with<b>rpc</b>and I have not dig deep into that but I guess we can conclude that is just sayin' -<i>'hey, this is an rpc function!',</i></li>
-                    <li>then we specify what<b>name</b>we want our function to have. Again - it is Your job to choose it, like in a normal program,
+                    <li>We start with <b>rpc</b> and I have not dig deep into that but I guess we can conclude that is just sayin' -<i>'hey, this is an rpc function!',</i></li>
+                    <li>then we specify what <b>name</b >we want our function to have. Again - it is Your job to choose it, like in a normal program,
                     </li>
-                    <li>after that cones what do we expect as an<b>argument</b>( for us it will be<b>HelloRequest</b>) to the function. Simpler - what will client send to the server. Remember to put that in the brackets!</li>
-                    <li><b>returns</b>means what You think it means,</li>
-                    <li><b>HelloReply</b> is what will<b>server</b>send back to the<b>client</b>. We again put it in the brackets.,</li>
+                    <li>after that cones what do we expect as an <b>argument</b> (for us it will be<b>HelloRequest</b>) to the function. Simpler - what will client send to the server. Remember to put that in the brackets!</li>
+                    <li><b>returns</b> means what You think it means,</li>
+                    <li><b>HelloReply</b> is what will <b>server</b> send back to the <b>client</b>. We again put it in the brackets,</li>
                     <li>curly braces at the end acutally may mean something but I have yet not discover any use of writing anything into them. We will specify what will out rpc function do in the code so we just put them for the sake of proto compiler.</li>
                     </ul></li>
-            <li><b>message</b>specifies what we will exchange between our services. We can call them small classes that define our type that we will send and receive:
+            <li><b>message</b> specifies what we will exchange between our services. We can call them small classes that define our type that we will send and receive:
                 <ul>
-                <li>we have to specify the name of our type -<b>HelloRequest</b>and<b>HelloReply</b>in our case,</li>
-                <li>between<b>curly braces</b>you specify what variables will Your type contain. I have added 1 more variable so You do't think We can't give it more than one,</li>
-                <li>You can find what types are supported by looking up proto3 documentation. We use<b>string</b>in both cases so we will just exchange some text,</li>
-                <li><b>=1; or =2;</b>just specify what place do they take in our type. going from 1 to whatever You like is common and easy to do, I have not yet found any place in the code where I would do otherwise than counting from 1 up.
+                <li>we have to specify the name of our type -<b>HelloRequest</b> and <b>HelloReply</b> in our case,</li>
+                <li>between <b>curly braces</b> you specify what variables will Your type contain. I have added 1 more variable so You do't think We can't give it more than one,</li>
+                <li>You can find what types are supported by looking up proto3 documentation. We use <b>string</b> in both cases so we will just exchange some text,</li>
+                <li><b>=1; or =2;</b> just specify what place do they take in our type. going from 1 to whatever You like is common and easy to do, I have not yet found any place in the code where I would do otherwise than counting from 1 up.
                 </li>
                 </ul></li>
-            <li>and last but not least: we create messages appropiate to what we have defined in our<b>SayHello</b>function. If we had more functionsusing different messages we would have to create them here.</li>
+            <li>and last but not least: we create messages appropiate to what we have defined in our <b>SayHello</b> function. If we had more functionsusing different messages we would have to create them here.</li>
         </ol>
-        Well, maybe it was not very short explanation but We now know about every aspect of our proto so You will never have to stare at something and think<i>'why is it there? Do I write it like that?'.</i> <br/>
-        What we have to do now is to create files that mach our programming language. We will do that individually for each language, but<b>first you will need protoc compiler (ignore this step if You only want to build C#).</b>
+        Well, maybe it was not very short explanation but We now know about every aspect of our proto so You will never have to stare at something and think<i>'why is it there? Do I write it like that?'.</i> <br/><br/>
+        What we have to do now is to create files that mach our programming language. We will do that individually for each language, but <b>first you will need protoc compiler (ignore this step if You only want to build C#).</b>
     </div>
     <div class="protobuf_config">
         <div class="header">
