@@ -129,7 +129,7 @@
             <h1>Downloading and configuring proto compiler</h1>
         </div>
         <div class="general_text">
-        To save ourselves from a lot of headache we are going to use <b>vcpkg</b> that can be <a href="https://github.com/Microsoft/vcpkg">downloaded here</a>. Vcpkg is a brilliant tool that lets you download a lot of things like protobuf or grpc and any other libraries and programs.<br/>I have downloaded it with git but you can do it by just downloading the zip file and extracting it somewhere, it will be the same. Remember where you put your vcpkg. For me it is: <i>C:\vcpkg</i>. To build vcpkg.exe (trust me we need that) you can fallow the tutorial on main site provided above or go into <b><i>scripts</i></b> folder inside vcpkg (for me it is<i>C:\vcpkg\scripts</i>) and run bootstrap.ps1 from powershell. I forgot to mention that everytime I do something in console it is going to be <b>powershell</b>.<br/> Okay, so we have vcpkg.exe ready to use, I mean, nearly ready. We need to use 'vcpkg' command from PS and for now You can't do that. To make it visible for PS and cmd fallow these steps:
+        To save ourselves from a lot of headache we are going to use <b>vcpkg</b> that can be <a href="https://github.com/Microsoft/vcpkg">downloaded here</a>. Vcpkg is a brilliant tool that lets you download a lot of things like protobuf or grpc and any other libraries and programs.<br/>I have downloaded it with git but you can do it by just downloading the zip file and extracting it somewhere, it will be the same. Remember where you put your vcpkg. For me it is: <i>C:\vcpkg</i>. To build vcpkg.exe (trust me we need that) you can fallow the tutorial on main site provided above or go into <b><i>scripts</i></b> folder inside vcpkg (for me it is <i>C:\vcpkg\scripts</i>) and run bootstrap.ps1 from powershell. I forgot to mention that everytime I do something in console it is going to be <b>powershell</b>.<br/> Okay, so we have vcpkg.exe ready to use, I mean, nearly ready. We need to use 'vcpkg' command from PS and for now You can't do that. To make it visible for PS and cmd fallow these steps:
             <ol>
                 <li>Open 'start' or just click windows button on your keyboard and start typing <b>'envi'</b> and 'Edit the system Environment Variables' will pop-up. Click on it,
                 </li>
@@ -148,17 +148,33 @@
                 <li>Open PS and type: <i>vcpkg install protobuf</i>,</li>
                 <li>download will start, just wait till it all finishes (it will take time, be patient. If you think it has frozen.. no, that just take some time, especcialy <b>building windows-rel</b>. You may need to turn off your antivirus for that).<b>Very important thing to note!!! Sometimes PS can get stucked while downloading this stuff. You can click on the PS and press any key on your keyboard so it receives some interrupt, it may speed things up. Anytime you think it takes too long try to do that trick.</b></li><li> then again open <b>Edit the System Environment Variables</b> like in the previous step,</li>
                 <li>again navigate to <b>Path</b> in <b>System Variables</b> and Edit it,</li>
-                <li>click on <b>New</b> and add path to newly downloaded <b>protoc.exe</b>. <br/>Note: All things you download with vcpkg are put into <b>packages</b> folder inside vcpkg folder, so for me it is <i>C:\vcpkg\packages</i>.<br/> Full path to <b>protoc.exe</b> in my case is <i>C:\vcpkg\packages<b>\protobuf_x86-windows\tools\protobuf</b></i> and this is the path we will copy into <b>PATH</b> in <b>System Variables</b>, at the end I have that: <br/><img src="images/protoc_path.JPG"/></li>
+                <li>click on <b>New</b> and add path to newly downloaded <b>protoc.exe</b>. <br/>Note: All things you download with vcpkg are put into <b>packages</b> folder inside vcpkg folder, so for me it is <i>C:\vcpkg\packages</i>.<br/> Full path to <b>protoc.exe</b> in my case is <i>C:\vcpkg\packages<b>\protobuf_x86-windows\tools\protobuf</b></i> and this is the path we will copy into <b>PATH</b> in <b>System Variables</b>, at the end I have that: <br/><img src="./images/protoc_path.JPG"/></li>
                 <li>now, <b>after reopening PS</b> and typing <b>protoc</b> you can see a list of commands for our use.</li>
             </ol>
-            We are set up and ready to create our projects!
+            <b>We are set up and ready to create our projects!</b>
         </div>
     </div>
     <div class="C# general_div">
         <div class="header" id="Csharp_ref">
+            <h1>Creating C# .NET Framework microservice</h1>
         </div>
         <div class="general_text">
-            First on our list is C#. we do not need protoc for that as I mentioned before but this is the easiest case and I guess most people will want to build in .NET or .NET Core.
+            First on our list is C#. we do not need protoc for that as I mentioned before. This is the easiest case and I guess most people will want to build in .NET or .NET Core anyway so lets get started!<br/>
+            Okay, standard stuff: I am using <b>Visual Studio 2017 Community</b> so everything I am doing is going to be dictated by it for now.<br/> Jumping in - One VS2017, File -> New Project -> Visual C# -> Class Library (.NET Framework). Give it a name and we are ready to go! <br/> <b>Note that .NET Framework has to be >= 4.5 for gRPC to work.</b> Also we are going to create a console app to not get distracted but it will be the same for a regular WPF app. Also also we start with .DLL because.. there is no because, you can start with a server or client class and steps will be the nearly the same.<br/><img style="width: 70vw" src="./images/Creating_Csharp_proj.JPG"/><br/>
+            <b>Also note that name can be anything you want! It is only an accident that my proto package name and dll name are the same.</b>
+            <b>Second note: Switch your mode from Debug to Release so all libraries will be linked with our solution to make it compatibile from the get-go.</b>
+            <ol><li>From <b>Talk</b> delete <b>class1.cs</b> or whatever was created in your project. After that operation your solution exploler should look like that: <br/><img src="./images/solution_exp_Csharp_first.JPG"/></li>
+                <li>Right click on the <b>Talk</b> project (in green) in <b>Solution exploler</b> and click on <b>Manage NuGet Packages</b>,</li>
+                <li>now we have to install a few things: <b>Google.Protobuf</b>, <b>Grpc</b>, <b>Grpc.Core</b> and <b>Grpc.Tools</b>It should look like that after everything is installed (+ System.Interactive.Async because it comes with project when creating it):<br/><img style="width: 75vw"  src="./images/proto_nuget_packages.JPG"/></li>
+                <li>after doing that we have to add <b>Talk.proto</b> to the <b>Talk</b> project. Yuo can copy-paste our existing proto file to solution directory or just add new file and copy-paste code from proto. W/e you do, it should look like that:<br/><img src="./images/solution_exp_Csharp_sec.JPG"/></li>
+                <li>close VS2017 and reopen it. If you don't do that you won't be able to do next step,</li>
+                <li>after you are back to the solution, open <b>Solution Exploler</b> and right-click on the <b>Talk.proto</b> file and <b>Properties</b>. Under <b>Advanced</b> options select <b>'Build Action' -> ProtoBuf.</b> Should look like that: <br/><img src="./images/properties_Csharp_talk.JPG"/></li>
+            </ol>
+            Cool! We've got the most importat thing set up and ready to go. Now we have to create our server and client projects inside our main solution. To do that: <ol><li>Right click on <b>Solution 'Talk' (1 project)</b> and <b>Add -> New project</b>. Choose <b>Visual C# -> Console App (.NET Framework)</b> and pick an appropriate name, i go with <b>MyServer</b> and <b>MyClient</b>. Should look like that: <br/><img style="width: 70vw" src="./images/Csharp_adding_server.JPG"/></li></ol>
+            After you've created botch client and server your Solution Exploler should look like that: <br/><img src="images/solution_exp_Csharp_third.JPG"/><br/>Nice! Okay, now there are two important steps before we get to the programming part: <ol><li>Add NuGet packages to both <b>client</b> and <b>server</b> projects. You do it like before but do not download <b>Grpc.Tools</b> for these two,</li>
+            <li>at the top of the screen you can see Program.cs for each client and server. If not, just open them. Click on one of them and navigate to <b>Project->Add reference...</b> at the top of the screen. In projects check box right next to Talk, like that: <br/><img style="width: 70vw" src="./images/Csharp_references.JPG"/><br/>Then just click <b>OK</b>, switch to the other Project.cs (just click on it in the bar at the top so you can see the code of it on the screen) and do the same.</li></ol> 
+            So we have all configuration done and we are ready to write some code. Let's start from our server code: 
+            
         </div>
     </div>
 </body>

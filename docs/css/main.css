@@ -1,6 +1,6 @@
 .header {
     width: 100vw;
-    text-align: left;
+    text-align: center;
     background-color: rgba(100, 149, 237, 1);
 }
 body {
@@ -54,6 +54,7 @@ body {
     
 }
 li {
+    text-align: left;
     padding: 6px;
 }
 .protobuf_config {
