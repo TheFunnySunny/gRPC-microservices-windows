@@ -7,44 +7,70 @@
 </head>
 
 <body>
-    <div class="warning">
+    <div class="general_div">
+        <div class="nav">
+            <h1>Navigation</h1>
+        </div>
+        <div class="nav_text">
+            <ol>
+                <li><a href="#warning_ref">A word of warning</a></li>
+                <li><a href="#description_ref">Description</a></li>
+                <li><a href="#goal_ref">Main goal of this article</a></li>
+                <li><a href="#grpc_ref">gRPC for better sanity</a></li>
+                <li><a href="#proto_ref">Creating Your proto file</a></li>
+                <li><a href="#config_proto_ref">Downloading and configuring proto compiler</a></li>
+                <li><a href="#Csharp_ref">Creating C# .NET Framework microservice</a></li>
+            </ol>
+        </div>
+    </div>
+    <div class="warning general_div">
         <div class="header">
+            <a name="warning_ref"/>
             <h1>A word of warning</h1>
         </div>
         <p>While reading this article keep in mind that I am only 19 years old and still going to school, I am not a junior dev/programmer but I have worked for a few companies and had some practice. </p>
     </div>
-    <div class="prev">
+    <div class="prev general_div" id="description_ref">
         <div class="header">
             <h1>Description</h1>
         </div>
+        <div class="general_text">
             Hi there, <b>You!</b> <br/>
             So You want to make a <b>gRPC microservice</b> on a <b>Windows</b> platform but You are getting lost in the <a href="https://grpc.io/">tutorial on the main site?</a> No worries, I will show You the easiest way possible to start this jorney! <p>Actually I am working with gRPC microservices for about three and a half week and I've found out that setting all these things up on a windows machine is a pain. I was searching for a good article explaining how to set things up and stuff but it just was not working for me. </p>
             <p>
                 At the end I was just trying all these <b>bazel</b> techniques from <a href="https://github.com/grpc/">gRPC main Git repo</a> and was pulling hair off my head really quickly. After I finally figured it all out (they acually recommended all this stuff tho, I just wasn't very patient and did not read whole README from the beggining to the end) I thought of making a tutorial for people who have the same problem as I once had.
                
-        </p>        
+            </p></div>      
     </div>
-    <div class="entry">
+    <div class="entry general_div" id="goal_ref">
         <div class="header">
             <h1>Main goal of this aricle</h1>
         </div>
+        <div class="general_text">
         We are going to create a bunch of <b>gRPC microservices</b> from scratch in <b>C#, C++, Go</b> and <b>RUST.</b> <br/> All code that I post here will be availabe together with all other files and solution on my <a href="https://github.com/TheFunnySunny/gRPC-microservices-windows"><b>Github repository.</b></a>
+        </div>
         <div class="ending_text">
             <b>Enough talking, lets get started!</b>
         </div>
     </div>
-    <div class="grpc">
+    <div class="grpc general_div">
         <div class="header">
+            <a name="grpc_ref"/>
             <h1>gRPC for better sanity</h1>
         </div>
+        <div class="general_text">
         So from my point of view <b>gRPC (general Remote Procedural Calls)</b> as a technique is better than any other at the level of design. If you have read the main page of gRPC you probably know that it is easy to distribute everything once you have defined Your PROTO file and stuff like that (more on that in a while).<br/><br/>For me as for someone who had to test performane of gRPC it is as fast as other protocols (well, HTTP2 actually) and much more beautiful and easier to make. But hey, You've chosen it already so I do not have to talk about it, but I will leave a <a href="https://grpc.io/docs/guides/">link</a> for You if you want to jump onto definitions.
+        </div>
     </div>
-    <div class="protobuf">
+    <div class="protobu general_divf" id="proto_ref">
         <div class="header">
             <h1>Creating Your proto file</h1>
         </div>
+        <div class="general_text">
         Okay, lets actually get started. A <i><b>proto</b></i> file is something where all the magic of gRPC happens. Let me actually show You a simple <i><b>proto</b></i> file that we will be working with along this article. It is actually nearly the same as in the examples from gRPC tutorials but we want to keep it simple for now.
-        <pre><code class="language-pascal">
+        </div>
+        <div>
+        <pre class="code_wrapper"><code>
         syntax = "proto3";
 
         package Talk;
@@ -64,6 +90,11 @@
         string message = 1;
         }
         </code></pre>
+        <div class="code_footer">
+            <b>Talk.proto</b>
+        </div>
+        </div>
+        <div class="general_text">
         Writing proto files is actually pretty simple, I will post my <a href="">simple c++ console communicator</a> created with gRPC so You can take a look at different definition of a protofile.<br/><br/>
         So by looking at the code we can actually see what is going to happend but there are several things to point out so let me do that real quick:<br/>
         <ol>
@@ -91,15 +122,43 @@
             <li>and last but not least: we create messages appropiate to what we have defined in our <b>SayHello</b> function. If we had more functionsusing different messages we would have to create them here.</li>
         </ol>
         Well, maybe it was not very short explanation but We now know about every aspect of our proto so You will never have to stare at something and think<i>'why is it there? Do I write it like that?'.</i> <br/><br/>
-        What we have to do now is to create files that mach our programming language. We will do that individually for each language, but <b>first you will need protoc compiler (ignore this step if You only want to build C#).</b>
+            What we have to do now is to create files that mach our programming language. We will do that individually for each language, but <b>first you will need protoc compiler (ignore this step if You only want to create for C#. <a href = "#Csharp_ref">Navigate to that place</a>).</b> </div>
     </div>
-    <div class="protobuf_config">
+    <div class="protobuf_config general_div" id="config_proto_ref">
         <div class="header">
             <h1>Downloading and configuring proto compiler</h1>
         </div>
+        <div class="general_text">
+        To save ourselves from a lot of headache we are going to use <b>vcpkg</b> that can be <a href="https://github.com/Microsoft/vcpkg">downloaded here</a>. Vcpkg is a brilliant tool that lets you download a lot of things like protobuf or grpc and any other libraries and programs.<br/>I have downloaded it with git but you can do it by just downloading the zip file and extracting it somewhere, it will be the same. Remember where you put your vcpkg. For me it is: <i>C:\vcpkg</i>. To build vcpkg.exe (trust me we need that) you can fallow the tutorial on main site provided above or go into <b><i>scripts</i></b> folder inside vcpkg (for me it is<i>C:\vcpkg\scripts</i>) and run bootstrap.ps1 from powershell. I forgot to mention that everytime I do something in console it is going to be <b>powershell</b>.<br/> Okay, so we have vcpkg.exe ready to use, I mean, nearly ready. We need to use 'vcpkg' command from PS and for now You can't do that. To make it visible for PS and cmd fallow these steps:
+            <ol>
+                <li>Open 'start' or just click windows button on your keyboard and start typing <b>'envi'</b> and 'Edit the system Environment Variables' will pop-up. Click on it,
+                </li>
+                <li>'System Properties' windows should open. At the right bottom you can see <b>Environment Variables...</b>, click on that button,
+                </li>
+                <li>
+                    another window pops up. On the second list - <b>System variables</b> find <b>PATH</b> and double click on it or once and 'Edit...',
+                </li>
+                <li>now you can see a windows called 'Edit environment variable'. Click on <b>New</b> on the left and paste the location of your vcpkg.exe file in here (for me it is <i>C:\vcpkg</i>). Do not add any more text at the end! So it looks like that at the end: <br/><img src="./images/vcpkg.JPG"/>
+                </li>
+                <li>then just click <b>Ok</b> everywhere and we are gucci,</li>
+                <li>now just open new instance of PS and type 'vcpkg' and a cool list of options should be presented.</li>
+            </ol>
+            We have downloaded vcpkg, now it is time for our <b>proto compiler.</b> Protoc is a part of Protobuf project maintained by Google itself. To download what we need fallow these few steps: 
+            <ol>
+                <li>Open PS and type: <i>vcpkg install protobuf</i>,</li>
+                <li>download will start, just wait till it all finishes (it will take time, be patient. If you think it has frozen.. no, that just take some time, especcialy <b>building windows-rel</b>. You may need to turn off your antivirus for that).<b>Very important thing to note!!! Sometimes PS can get stucked while downloading this stuff. You can click on the PS and press any key on your keyboard so it receives some interrupt, it may speed things up. Anytime you think it takes too long try to do that trick.</b></li><li> then again open <b>Edit the System Environment Variables</b> like in the previous step,</li>
+                <li>again navigate to <b>Path</b> in <b>System Variables</b> and Edit it,</li>
+                <li>click on <b>New</b> and add path to newly downloaded <b>protoc.exe</b>. <br/>Note: All things you download with vcpkg are put into <b>packages</b> folder inside vcpkg folder, so for me it is <i>C:\vcpkg\packages</i>.<br/> Full path to <b>protoc.exe</b> in my case is <i>C:\vcpkg\packages<b>\protobuf_x86-windows\tools\protobuf</b></i> and this is the path we will copy into <b>PATH</b> in <b>System Variables</b>, at the end I have that: <br/><img src="images/protoc_path.JPG"/></li>
+                <li>now, <b>after reopening PS</b> and typing <b>protoc</b> you can see a list of commands for our use.</li>
+            </ol>
+            We are set up and ready to create our projects!
+        </div>
     </div>
-    <div class="C#">
-        <div class="header">
+    <div class="C# general_div">
+        <div class="header" id="Csharp_ref">
+        </div>
+        <div class="general_text">
+            First on our list is C#. we do not need protoc for that as I mentioned before but this is the easiest case and I guess most people will want to build in .NET or .NET Core.
         </div>
     </div>
 </body>
