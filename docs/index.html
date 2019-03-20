@@ -20,6 +20,7 @@
                 <li><a href="#proto_ref">Creating Your proto file</a></li>
                 <li><a href="#config_proto_ref">Downloading and configuring proto compiler</a></li>
                 <li><a href="#Csharp_ref">Creating C# .NET Framework microservice</a></li>
+                <li><a href="#cplus_ref">Creating C++ microservice</a></li>
             </ol>
         </div>
     </div>
@@ -174,9 +175,92 @@
             After you've created botch client and server your Solution Exploler should look like that: <br/><img src="images/solution_exp_Csharp_third.JPG"/><br/>Nice! Okay, now there are two important steps before we get to the programming part: <ol><li>Add NuGet packages to both <b>client</b> and <b>server</b> projects. You do it like before but do not download <b>Grpc.Tools</b> for these two,</li>
             <li>at the top of the screen you can see Program.cs for each client and server. If not, just open them. Click on one of them and navigate to <b>Project->Add reference...</b> at the top of the screen. In projects check box right next to Talk, like that: <br/><img style="width: 70vw" src="./images/Csharp_references.JPG"/><br/>Then just click <b>OK</b>, switch to the other Project.cs (just click on it in the bar at the top so you can see the code of it on the screen) and do the same.</li></ol> 
             So we have all configuration done and we are ready to write some code. Let's start from our server code: 
-            
+        <div>
+            <pre class="code_wrapper"><code>using Grpc.Core;
+using Talk;
+using System.Threading.Tasks;
+using System;
+namespace MyServer
+{
+    class TalkImpl : Greeter.GreeterBase
+    {
+        // Server side handler of the SayHello RPC
+        public override Task &ltHelloReply&gt SayHello
+        (HelloRequest request, ServerCallContext context)
+        {
+        Console.WriteLine("Hello" + request.Name);
+        return Task.FromResult(
+        new HelloReply { Message = "Hello" + request.Name }
+        );
+        }
+    }
+    class Program
+    {
+        const int Port = 50051;
+        public static void Main(string[] args)
+        {
+            string address = "0.0.0.0";
+            Grpc.Core.Server server = new Grpc.Core.Server
+            {
+            Services = { Greeter.BindService(new TalkImpl()) },
+            Ports = { 
+            new ServerPort(address, Port, ServerCredentials.Insecure)
+            }};
+            server.Start();
+            Console.WriteLine("Greeter server listening on port " + Port);
+            Console.WriteLine("Press any key to stop the server...");
+            Console.ReadKey();            
+            server.ShutdownAsync().Wait();
+        }
+    }
+}                </code></pre>
+            <div class="code_footer">                
+            <b>Program.cs from MyServer project</b>
+            </div>
+        </div>
+          I would like to talk about each and every aspect of that code but It will not be very educational so lets just point at the most crucial points of the code: <ul> <li><b>class TalkImpl : Greeter.GreeterBase</b> creates a class that will refer to our Greeter, this is how we start defining thigs from out <b>proto</b> file,</li>
+            <li><b>public override Task &ltHelloReply&gt SayHello
+        (HelloRequest request, ServerCallContext context)</b> again refers to the function we have defined in <b>proto</b> file. Simple, ain' it?</li><li>we can do what we want in the function body but at the end we have to return what we have specified in the <b>Talk.proto</b>, in this case it is <b>HelloReply</b>. Look at the whole class and method once again and you understand everything.</li><li>In Main we create a server instance and bind as a service,</li><li>we also specify server port and address on which our server will be listening (IP: 0.0.0.0 means it will listen on all IPs availabe on your PC and port is your choosing, 50051 in our case) and credencials (in our case: insecure),</li><li>at the end we just start the server and if someone clicks a key everything stops.</li></ul>  
+            And that is our server! After we send <b>HelloRequest</b> to it we will recieve a <b>HelloReply</b> with a new message. The only thing left now is to create a client, lets do it! 
+            <div>
+            <pre class="code_wrapper"><code>using System;
+using Grpc.Core;
+using Talk;
+namespace MyClient
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Enter your name: ");
+            String user = Console.ReadLine();
+            Channel channel = new Channel(
+            "127.0.0.1:50051",
+            ChannelCredentials.Insecure);
+            var client = new Greeter.GreeterClient(channel);
+            HelloReply reply = client.SayHello(
+            new HelloRequest { Name = user }
+            );
+            Console.WriteLine(reply.Message);
+            Console.WriteLine("Press any key to exit...");
+            Console.ReadKey();
+        }
+    }
+}                </code></pre>
+            <div class="code_footer">                
+            <b>Program.cs from MyClient project</b>
+            </div>
+        </div>
+            This one is actually easier than the server. We create a <b>channel</b> which specifies IP and port to which we are going to connect. After making a channel instance we create a <b>client</b> that connects to that channel. At the end we just call <b>SayHello</b> function with the parameter <b>HelloRequest</b> with a <b>name</b> (as in the <b>proto</b> file).<br/>
+            Only thing that's left it to <b>build</b> the project, run Server and then client and boom!<br/><img src="./images/csharp_done.JPG"/><br/>Hope you were able to compile and run everything without any problems. All code is available <a href = "https://github.com/TheFunnySunny/gRPC-microservices-windows/tree/master/C%23">here.</a> It may have different structure than your solution because I've made a mistake when creating <b>MyClient</b> and put it in the <b>Talk</b> folder but that is nothing bad (at least for the compiler). In the future I'll do better!
+    </div>        
+    </div>
+    <div class="cplus_div" id="cplus_ref">
+        <div class="header">
+            <h1>Creating C++ microservice</h1>
+        </div>
+        <div class="general_text">
         </div>
     </div>
 </body>
-
 </html>
