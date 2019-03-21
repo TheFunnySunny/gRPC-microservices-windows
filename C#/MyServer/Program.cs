@@ -9,7 +9,7 @@ namespace MyServer
         // Server side handler of the SayHello RPC
         public override Task<HelloReply> SayHello(HelloRequest request, ServerCallContext context)
         {
-            Console.WriteLine("Hello" + request.Name);
+            Console.WriteLine("Hello" + request.Name + ". I have received your message at " + request.Date);
             return Task.FromResult(new HelloReply { Message = "Hello" + request.Name });
         }
     }

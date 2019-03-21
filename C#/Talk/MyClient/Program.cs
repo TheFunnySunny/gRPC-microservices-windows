@@ -11,7 +11,7 @@ namespace MyClient
             String user = Console.ReadLine();
             Channel channel = new Channel("127.0.0.1:50051", ChannelCredentials.Insecure);
             var client = new Greeter.GreeterClient(channel);
-            HelloReply reply = client.SayHello(new HelloRequest { Name = user });
+            HelloReply reply = client.SayHello(new HelloRequest { Name = user, Date=DateTime.Now.ToString() });
             Console.WriteLine(reply.Message);
             Console.WriteLine("Press any key to exit...");
             Console.ReadKey();

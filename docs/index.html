@@ -21,12 +21,12 @@
                 <li><a href="#config_proto_ref">Downloading and configuring proto compiler</a></li>
                 <li><a href="#Csharp_ref">Creating C# .NET Framework microservice</a></li>
                 <li><a href="#cplus_ref">Creating C++ microservice</a></li>
+                <li><a href="#go_ref">Creating Go microservice</a></li>
             </ol>
         </div>
     </div>
-    <div class="warning general_div">
+    <div class="warning general_div" id="warning_ref">
         <div class="header">
-            <a name="warning_ref"/>
             <h1>A word of warning</h1>
         </div>
         <p>While reading this article keep in mind that I am only 19 years old and still going to school, I am not a junior dev/programmer but I have worked for a few companies and had some practice. </p>
@@ -60,7 +60,7 @@
             <h1>gRPC for better sanity</h1>
         </div>
         <div class="general_text">
-        So from my point of view <b>gRPC (general Remote Procedural Calls)</b> as a technique is better than any other at the level of design. If you have read the main page of gRPC you probably know that it is easy to distribute everything once you have defined Your PROTO file and stuff like that (more on that in a while).<br/><br/>For me as for someone who had to test performane of gRPC it is as fast as other protocols (well, HTTP2 actually) and much more beautiful and easier to make. But hey, You've chosen it already so I do not have to talk about it, but I will leave a <a href="https://grpc.io/docs/guides/">link</a> for You if you want to jump onto definitions.
+        So from my point of view <b>gRPC (general Remote Procedural Calls)</b> as a technique is better than any other at the level of design. If you have read the main page of gRPC you probably know that it is easy to distribute everything once you have defined Your PROTO file and stuff like that (more on that in a while). What is more important is that you can send gRPC requests between services written in completely different languages! So for example client can be written in C++ and server might be in RUST and they can talk to each other like tkey know themselves from years!<br/><br/>For me as for someone who had to test performane of gRPC it is as fast as other protocols (well, HTTP2 actually) and much more beautiful and easier to make. But hey, You've chosen it already so I do not have to talk about it, but I will leave a <a href="https://grpc.io/docs/guides/">link</a> for You if you want to jump onto definitions.
         </div>
     </div>
     <div class="protobu general_divf" id="proto_ref">
@@ -130,7 +130,7 @@
             <h1>Downloading and configuring proto compiler</h1>
         </div>
         <div class="general_text">
-        To save ourselves from a lot of headache we are going to use <b>vcpkg</b> that can be <a href="https://github.com/Microsoft/vcpkg">downloaded here</a>. Vcpkg is a brilliant tool that lets you download a lot of things like protobuf or grpc and any other libraries and programs.<br/>I have downloaded it with git but you can do it by just downloading the zip file and extracting it somewhere, it will be the same. Remember where you put your vcpkg. For me it is: <i>C:\vcpkg</i>. To build vcpkg.exe (trust me we need that) you can fallow the tutorial on main site provided above or go into <b><i>scripts</i></b> folder inside vcpkg (for me it is <i>C:\vcpkg\scripts</i>) and run bootstrap.ps1 from powershell. I forgot to mention that everytime I do something in console it is going to be <b>powershell</b>.<br/> Okay, so we have vcpkg.exe ready to use, I mean, nearly ready. We need to use 'vcpkg' command from PS and for now You can't do that. To make it visible for PS and cmd fallow these steps:
+        To save ourselves from a lot of headache we are going to use <b>vcpkg</b> that can be <a href="https://github.com/Microsoft/vcpkg">downloaded here</a>. Vcpkg is a brilliant tool that lets you download a lot of things like protobuf or grpc and any other libraries and programs.<br/>I have downloaded it with git but you can do it by just downloading the zip file and extracting it somewhere, it will be the same. Remember where you put your vcpkg. For me it is: <i>C:\vcpkg</i>. To build vcpkg.exe (trust me we need that) you can fallow the tutorial on main site provided above or go into <b><i>scripts</i></b> folder inside vcpkg (for me it is <i>C:\vcpkg\scripts</i>) and run bootstrap.ps1 from powershell.<br/> Okay, so we have vcpkg.exe ready to use, I mean, nearly ready. We need to use 'vcpkg' command from PS and for now You can't do that. To make it visible for PS and cmd fallow these steps:
             <ol>
                 <li>Open 'start' or just click windows button on your keyboard and start typing <b>'envi'</b> and 'Edit the system Environment Variables' will pop-up. Click on it,
                 </li>
@@ -144,7 +144,8 @@
                 <li>then just click <b>Ok</b> everywhere and we are gucci,</li>
                 <li>now just open new instance of PS and type 'vcpkg' and a cool list of options should be presented.</li>
             </ol>
-            We have downloaded vcpkg, now it is time for our <b>proto compiler.</b> Protoc is a part of Protobuf project maintained by Google itself. To download what we need fallow these few steps: 
+            We have downloaded vcpkg, now it is time for our <b>proto compiler.</b> 
+            Here I have to confess that I do not acutally know IF you need to download CMake or no but you can figure it out. Fallow along and if you get any errors about CMake not existing you will have to install it too. Protoc is a part of Protobuf project maintained by Google itself. To download what we need fallow these few steps: 
             <ol>
                 <li>Open PS and type: <i>vcpkg install protobuf</i>,</li>
                 <li>download will start, just wait till it all finishes (it will take time, be patient. If you think it has frozen.. no, that just take some time, especcialy <b>building windows-rel</b>. You may need to turn off your antivirus for that).<b>Very important thing to note!!! Sometimes PS can get stucked while downloading this stuff. You can click on the PS and press any key on your keyboard so it receives some interrupt, it may speed things up. Anytime you think it takes too long try to do that trick.</b></li><li> then again open <b>Edit the System Environment Variables</b> like in the previous step,</li>
@@ -161,7 +162,7 @@
         </div>
         <div class="general_text">
             First on our list is C#. we do not need protoc for that as I mentioned before. This is the easiest case and I guess most people will want to build in .NET or .NET Core anyway so lets get started!<br/>
-            Okay, standard stuff: I am using <b>Visual Studio 2017 Community</b> so everything I am doing is going to be dictated by it for now.<br/> Jumping in - One VS2017, File -> New Project -> Visual C# -> Class Library (.NET Framework). Give it a name and we are ready to go! <br/> <b>Note that .NET Framework has to be >= 4.5 for gRPC to work.</b> Also we are going to create a console app to not get distracted but it will be the same for a regular WPF app. Also also we start with .DLL because.. there is no because, you can start with a server or client class and steps will be the nearly the same.<br/><img style="width: 70vw" src="./images/Creating_Csharp_proj.JPG"/><br/>
+            Okay, standard stuff: I am using <b>Visual Studio 2017 Community</b> so everything I am doing is going to be dictated by it for now.<br/> Jumping in - One VS2017, File -> New Project -> Visual C# -> Class Library (.NET Framework). Give it a name and we are ready to go! <br/> <b>Note that .NET Framework has to be >= 4.5 for gRPC to work.</b> Also we are going to create a console app to not get distracted but it will be the same for a regular WPF app. Also also we start with .DLL because.. there is no because, you can start with a server or client class and steps will be the nearly the same.<br/><img src="./images/Creating_Csharp_proj.JPG"/><br/>
             <b>Also note that name can be anything you want! It is only an accident that my proto package name and dll name are the same.</b>
             <b>Second note: Switch your mode from Debug to Release so all libraries will be linked with our solution to make it compatibile from the get-go.</b>
             <ol><li>From <b>Talk</b> delete <b>class1.cs</b> or whatever was created in your project. After that operation your solution exploler should look like that: <br/><img src="./images/solution_exp_Csharp_first.JPG"/></li>
@@ -171,9 +172,9 @@
                 <li>close VS2017 and reopen it. If you don't do that you won't be able to do next step,</li>
                 <li>after you are back to the solution, open <b>Solution Exploler</b> and right-click on the <b>Talk.proto</b> file and <b>Properties</b>. Under <b>Advanced</b> options select <b>'Build Action' -> ProtoBuf.</b> Should look like that: <br/><img src="./images/properties_Csharp_talk.JPG"/></li>
             </ol>
-            Cool! We've got the most importat thing set up and ready to go. Now we have to create our server and client projects inside our main solution. To do that: <ol><li>Right click on <b>Solution 'Talk' (1 project)</b> and <b>Add -> New project</b>. Choose <b>Visual C# -> Console App (.NET Framework)</b> and pick an appropriate name, i go with <b>MyServer</b> and <b>MyClient</b>. Should look like that: <br/><img style="width: 70vw" src="./images/Csharp_adding_server.JPG"/></li></ol>
+            Cool! We've got the most importat thing set up and ready to go. Now we have to create our server and client projects inside our main solution. To do that: <ol><li>Right click on <b>Solution 'Talk' (1 project)</b> and <b>Add -> New project</b>. Choose <b>Visual C# -> Console App (.NET Framework)</b> and pick an appropriate name, i go with <b>MyServer</b> and <b>MyClient</b>. Should look like that: <br/><img src="./images/Csharp_adding_server.JPG"/></li></ol>
             After you've created botch client and server your Solution Exploler should look like that: <br/><img src="images/solution_exp_Csharp_third.JPG"/><br/>Nice! Okay, now there are two important steps before we get to the programming part: <ol><li>Add NuGet packages to both <b>client</b> and <b>server</b> projects. You do it like before but do not download <b>Grpc.Tools</b> for these two,</li>
-            <li>at the top of the screen you can see Program.cs for each client and server. If not, just open them. Click on one of them and navigate to <b>Project->Add reference...</b> at the top of the screen. In projects check box right next to Talk, like that: <br/><img style="width: 70vw" src="./images/Csharp_references.JPG"/><br/>Then just click <b>OK</b>, switch to the other Project.cs (just click on it in the bar at the top so you can see the code of it on the screen) and do the same.</li></ol> 
+            <li>at the top of the screen you can see Program.cs for each client and server. If not, just open them. Click on one of them and navigate to <b>Project->Add reference...</b> at the top of the screen. In projects check box right next to Talk, like that: <br/><img src="./images/Csharp_references.JPG"/><br/>Then just click <b>OK</b>, switch to the other Project.cs (just click on it in the bar at the top so you can see the code of it on the screen) and do the same.</li></ol> 
             So we have all configuration done and we are ready to write some code. Let's start from our server code: 
         <div>
             <pre class="code_wrapper"><code>using Grpc.Core;
@@ -185,7 +186,7 @@ namespace MyServer
     class TalkImpl : Greeter.GreeterBase
     {
         // Server side handler of the SayHello RPC
-        public override Task &ltHelloReply&gt SayHello
+        public override Task &lt;HelloReply&gt; SayHello
         (HelloRequest request, ServerCallContext context)
         {
         Console.WriteLine("Hello" + request.Name);
@@ -219,7 +220,7 @@ namespace MyServer
             </div>
         </div>
           I would like to talk about each and every aspect of that code but It will not be very educational so lets just point at the most crucial points of the code: <ul> <li><b>class TalkImpl : Greeter.GreeterBase</b> creates a class that will refer to our Greeter, this is how we start defining thigs from out <b>proto</b> file,</li>
-            <li><b>public override Task &ltHelloReply&gt SayHello
+            <li><b>public override Task &lt;HelloReply&gt; SayHello
         (HelloRequest request, ServerCallContext context)</b> again refers to the function we have defined in <b>proto</b> file. Simple, ain' it?</li><li>we can do what we want in the function body but at the end we have to return what we have specified in the <b>Talk.proto</b>, in this case it is <b>HelloReply</b>. Look at the whole class and method once again and you understand everything.</li><li>In Main we create a server instance and bind as a service,</li><li>we also specify server port and address on which our server will be listening (IP: 0.0.0.0 means it will listen on all IPs availabe on your PC and port is your choosing, 50051 in our case) and credencials (in our case: insecure),</li><li>at the end we just start the server and if someone clicks a key everything stops.</li></ul>  
             And that is our server! After we send <b>HelloRequest</b> to it we will recieve a <b>HelloReply</b> with a new message. The only thing left now is to create a client, lets do it! 
             <div>
@@ -260,7 +261,194 @@ namespace MyClient
             <h1>Creating C++ microservice</h1>
         </div>
         <div class="general_text">
+            To make your first C++ microservice you will may <b>VS2017</b> or at least this is what I'll be using here but if you know CMake you can reproduce all these steps that way. So, let us begin: <ol><li>Open VS2017 and <b>create new Project -> Visual C++ -> Empty Project</b>. We will start from creating a <b>Server</b> so a name corresponding to that will be fitting. I will call my server <b>TalkingServer</b>,</li>
+            <li>after our solution is created <b>right click on 'Solution TalkingServer (1 project)' -> Add -> New Project -> Visual C++ -> Empty Project</b> and choose a name. It will be a Client side so I have chosen <b>TalkingClient</b> for a name. I will also place it inside a common folder for my solution, namely <b>D:\SOurceTree_Repo\gRPC-microservices-windows\C++</b>. End result looks like that: <br/><img src="./images/cplus_solutionex_first.JPG"/> <img src="./images/c_plus_exploler_files.JPG"/></li></ol>
+            Then switch from <b>Debug</b> to <b>Release</b> just to be safe.<br/>
+            Before we get to writing code we have to generate <b>proto files.</b> To do so we will have to use <b>protoc</b> that we have configured earlier. If you haven't do that already please go back to <b>Downloading and Configuring proto compiler.</b><br/>To create gRPC stubs for C++ fallow these steps: <ol><li>Navigate to a directory where you have set up your client and server projects, for me it is <b>D:\SOurceTree_Repo\gRPC-microservices-windows\C++</b> and create a new folder in there called <b>proto</b> so everything looks liek that at the end: <br/><img src="./images/cpp_slution_folders.JPG"/></li><li>copy and paste <b>Talk.proto</b> into the <b>proto</b> folder created in our c++ directory, so for my case it is <b>D:\SOurceTree_Repo\gRPC-microservices-windows\C++\proto</b></li><li>open PS in the directory where your <i>proto</i> file is located and type fallowing commands (in bold text), one by one in that order: <ol>
+            <li><b>vcpkg install grpc</b> - this will install all the stuff needed for the compilation. Takes a lot of time on slower machines.<br/><b>A VERY BIG IMPORTANT SIDE NOTE (READ IT):</b> If you get an error while doing that and get something about <b>openssl</b> first thing to do is to open <b>visual studio installer</b> and update your VS. This worked for me and may work for You too.</li>
+            <li><b>vcpkg install zlib</b> - this may not install anything because grpc <b>should</b> come with zlib but just in case you can try to do that one too</li>
+            <li>if you are wondering where are all these downloaded things stored they are in the 'C:\vcpkg\installed\x86-windows\tools' for me and something similiar for you</li>
+            </ol></li>
+            <li>navigate your PS to the <b>proto</b> folder in your c++ solution (for me it is 'D:\SOurceTree_Repo\gRPC-microservices-windows\C++\proto'</li>
+            <li>run (in PS): <b>protoc --plugin=protoc-gen-grpc=C:\vcpkg\installed\x86-windows\tools\grpc\grpc_cpp_plugin.exe  --grpc_out=. Talk.proto</b><br/>Let me just point to an important thing: As you can see I have specified some path in <b>--plugin</b> option. This is needed here because we haven't added all grpc.exe files to PATH. The point here is that you have to provide a path to <b>grpc_cpp_plugin.exe</b> as I did. Look at my path provided and you can get to that folder and that file too.</li>
+            <li>run (in PS): <b>protoc Talk.proto --cpp_out=.</b></li>
+            <li>after this two instructions You should see four additional files in your proto directory, that's cool! Picture: <br/><img src="./images/generated_cpp_stubs.JPG"/></li>
+            </ol>
+            So <b>now</b> we are prepared to jump into actually setting up both client and server and coding them both. Lets add our generated files to client and server respectively:
+            <ol>
+                <li>in your solution in VS unroll TalkingClient and TalkingServer projects. You can see 4 folders in each of them, right?<br/><img src="./images/folders_screen_cpp.JPG"/></li>
+                <li>in both projects do these steps:
+                <ul>       
+                    
+                <li>right click on the project in Solution Exploler and go to <b>Properties</b><ul>
+                    <li>right click on Header Files -> Add -> Existing Item... -> navigate to a folder where you have generated your c++ files from Talk.proto and choose files with <b>.h</b> extension. For me it is "Talk.pb.h" and "Talk.grpc.pb.h". Click <b>Add</b></li>
+                <li>right click on Source Files -> Add -> Existing Item... -> navigate to a folder with your c++ generated files and choose all with <b>.cc</b> extension. For me it is "Talk.grpc.pb.cc" and "Talk.pb.cc". Click <b>Add</b></li>
+                <li>after that both Client and Server solution exploler should look like that:<br/><img src="./images/sol_exp_view_cpp.JPG"/></li>
+                    <li>go to <b>Configuration Properties -> VC++ directories</b> and edit <b>Include Directories</b>. Now you have to add path of <b>include</b> folder from <b>vcpkg</b>. For me the path is <b>'C:\vcpkg\installed\x86-windows\include'</b> and path to where you have compiled your <b>proto</b> files, for me it is <b>'D:\SOurceTree_Repo\gRPC-microservices-windows\C++\proto'</b> Click OK</li>
+                    <li>while still in <b>VC++ directories</b> edit <b>Library Directories</b> and add path for <b>3</b> lib folders. I will provide you my path and you can figure out where to find them in your <b>vcpkg folder</b> <ul>
+                        <li>C:\vcpkg\packages\zlib_x86-windows\lib</li>
+                        <li>C:\vcpkg\packages\protobuf_x86-windows\lib</li>
+                        <li>C:\vcpkg\packages\grpc_x86-windows\lib</li>
+                        </ul>Click on <b>Apply</b> but do not close the window</li>
+                    <li>now go to <b>Linker -> Input</b> and add the fallowing items into <b>Additional Dependencies</b>: <ul>
+                        <li>gpr.lib</li>
+                        <li>grpc.lib</li>
+                        <li>grpc_unsecure.lib</li>
+                        <li>grpc++_unsecure.lib</li>
+                        <li>grpc++_cronet.lib</li>
+                        <li>grpc++_error_details.lib</li>
+                        <li>grpc++_reflection.lib</li>
+                        <li>libprotobuf.lib</li>
+                        <li>libprotoc.lib</li>
+                        <li>zlib.lib</li>
+                        <li>ws2_32.lib</li>
+                        </ul></li>
+                    <li>Click <b>Apply</b> and <b>OK</b></li>
+                    </ul>
+                    </li>
+                    </ul></li>                
+            </ol>
+            Cool, everything's ready! Let's start from coding our <b>server</b> first (everything in this part will refer to <b>TalkingServer</b> project, we will do Client side later): 
+            <ul>
+                <li>in Solution Exploler add new <b>.cpp</b> file that will serve as our main file. I have created <b>Server.cpp</b> file. Open it in VS.</li>
+            </ul>
+            Code for our simple server looks like that: 
+            <div>
+            <pre class="code_wrapper"><code>#include &lt;iostream&gt;
+#include &lt;memory&gt;
+#include &lt;string&gt;
+#include &lt;grpcpp/grpcpp.h&gt;
+#include &lt;Talk.grpc.pb.h&gt;
+
+using grpc::Status;
+using grpc::Channel;
+using grpc::Server;
+using grpc::Service;
+using grpc::ServerContext;
+using grpc::ServerBuilder;
+using Talk::HelloReply;
+using Talk::HelloRequest;
+using Talk::Greeter;
+
+class TalkingService final : public  Greeter::Service
+{
+	Status SayHello
+    (ServerContext* context, const HelloRequest* cText, HelloReply* sText)
+    override
+	{
+		std::cout &lt;&lt; "Hello " &lt;&lt; cText->name()&lt;&lt;std::endl;
+		std::cout &lt;&lt; "Your time is: " &lt;&lt; cText->date()&lt;&lt;std::endl;
+		sText->set_message("Hello " + cText->name());
+		return Status::OK;
+	}
+};
+
+void RunServer()
+{
+	std::cout &lt;&lt; "Server stated listening on port 500521." &lt;&lt; std::endl;
+	std::string ServerAddr("0.0.0.0:50051");
+	TalkingService msgTalkService;
+	ServerBuilder builder;
+	builder.AddListeningPort(ServerAddr, 
+            grpc::InsecureServerCredentials());
+	builder.RegisterService(&amp;msgTalkService);
+	std::unique_ptr&lt;Server&gt; server(builder.BuildAndStart());
+	server->Wait();
+}
+int main()
+{
+	RunServer();
+	return 0;
+}
+            </code></pre>
+            <div class="code_footer">                
+            <b>Server.cpp</b>
+            </div>
         </div>
+            At this point it would be cool if you hit <b>Rebuild Solution</b> and probably get an error. If no error occured then you can go ahead but <b>if there was an error while building Server</b> you should read this quick message: <ul><li>if the error is from <b>port_platform.h</b> and it talks about <b>_WIN32_WINNT</b> being less than <b>0x600</b> then you just have to click twice no that error so that <b>port_platform.h</b> opens. Now paste this line in there: <b>#define _WIN32_WINNT 0x600</b> and try <b>rebuilding</b> again</li>
+            <li>if rebuild went succesfully then great! But if not yuo have to fix that yourself, find in the internet OR report as an issue in the main GIT repo of this project. You can also message me (contact provided at the end if this page).</li></ul>
+            <br/>Okay, time for some <b>Client</b> code!!<br/>Add <b>Client.cpp</b> to your Client project and let's go!<br/>I hope your client is configured as we have shown earlier. Code for client side look like this:
+            <div>
+            <pre class="code_wrapper"><code>#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;grpcpp/grpcpp.h&gt;
+#include &lt;Talk.grpc.pb.h&gt;
+#include &lt;ctime>&gt;
+
+using grpc::Status;
+using grpc::Channel;
+using grpc::ClientContext;
+using grpc::ClientWriter;
+using grpc::ServerContext;
+using Talk::HelloReply;
+using Talk::HelloRequest;
+using Talk::Greeter;
+
+class GreeterClient
+{
+public:
+	GreeterClient(std::shared_ptr&lt;Channel&gt; channel) :
+    serverStub(Greeter::NewStub(channel)) {}
+	void SendMesg(std::string name, std::string time)
+	{
+		HelloRequest request;
+		HelloReply reply;
+		Status status;
+		ClientContext context;
+		request.set_date(time);
+		request.set_name(name);
+		status = serverStub->SayHello(&amp;context, request, &amp;reply);
+		if (status.ok())
+		{
+			std::cout &lt;&lt; reply.message() &lt;&lt; std::endl;
+		}
+		else
+		{
+			std::cout &lt;&lt; "\r";
+			std::cout &lt;&lt; status.error_code();
+                        std::cout &lt;&lt; ": " &lt;&lt; status.error_message() &lt;&lt; std::endl;
+		}
+	}
+private:
+	std::unique_ptr&lt;Greeter::Stub&gt; serverStub;
+};
+
+int main()
+{
+	grpc_init();
+	std::string name;
+	std::string time;
+	std::time_t t;	
+	std::tm* now = new std::tm;	
+	std::cout &lt;&lt; "Enter your name: ";
+	std::cin >> name;
+	t = std::time(0);
+	localtime_s(now, &amp;t);
+	time = std::to_string(now->tm_hour) +
+    ":" + std::to_string(now->tm_min) +
+    ":" + std::to_string(now->tm_sec);
+	GreeterClient client(grpc::CreateChannel(
+            "127.0.0.1:50051", 
+            grpc::InsecureChannelCredentials()));
+	client.SendMesg(name, time);
+	system("pause");
+	grpc_shutdown();
+	return 0;
+}
+            </code></pre>
+            <div class="code_footer">                
+            <b>Client.cpp</b>
+            </div>
+        </div>
+            I haven't explained any code here or in the server description because well, you program in C++, you can figure it out! But I want to <b>point out</b> one important thing: <b>grpc_init()</b> and <b>grpc_shutdown()</b> functions. They ahve to be called inside to set everything up on the gRPC side. Try removing one of them and running client again.<br/>
+            And that's all! One more thing: Both <b>.exe</b> files landed in my <b>TalkingServer\Release</b> directory but I guess that was expected. If you went to Client directory to find .exe you should se if it is maybe stored in the Server directory. End result:<br/><img src="./images/cpp_end_result.JPG"/><br/>If you want to see another example of a bigger C++ gRPC project check out my <a href="https://github.com/TheFunnySunny/gRPC-console-messanger-c-">console messanger.</a>
+        </div>
+        <div class="go general_div" id="go_ref">
+        <div class="header">
+            <h1>Creating Go microservice</h1>
+        </div>
+        <p>Working on it ... </p>
+    </div>
     </div>
 </body>
 </html>

@@ -21,6 +21,7 @@
 *.pyc
 *.xml
 *.so
+*.db
 ipch/
 obj/
 [Bb]in
