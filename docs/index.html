@@ -22,6 +22,7 @@
                 <li><a href="#Csharp_ref">Creating C# .NET Framework microservice</a></li>
                 <li><a href="#cplus_ref">Creating C++ microservice</a></li>
                 <li><a href="#go_ref">Creating Go microservice</a></li>
+                <li><a href = "rust_ref">Creating RUST microservice</a></li>
             </ol>
         </div>
     </div>
@@ -131,7 +132,7 @@
         </div>
         <div class="general_text">
         To save ourselves from a lot of headache we are going to use <b>vcpkg</b> that can be <a href="https://github.com/Microsoft/vcpkg">downloaded here</a>. Vcpkg is a brilliant tool that lets you download a lot of things like protobuf or grpc and any other libraries and programs.<br/>I have downloaded it with git but you can do it by just downloading the zip file and extracting it somewhere, it will be the same. Remember where you put your vcpkg. For me it is: <i>C:\vcpkg</i>. To build vcpkg.exe (trust me we need that) you can fallow the tutorial on main site provided above or go into <b><i>scripts</i></b> folder inside vcpkg (for me it is <i>C:\vcpkg\scripts</i>) and run bootstrap.ps1 from powershell.<br/> Okay, so we have vcpkg.exe ready to use, I mean, nearly ready. We need to use 'vcpkg' command from PS and for now You can't do that. To make it visible for PS and cmd fallow these steps:
-            <ol>
+            <ol id="howto_PATH_var">
                 <li>Open 'start' or just click windows button on your keyboard and start typing <b>'envi'</b> and 'Edit the system Environment Variables' will pop-up. Click on it,
                 </li>
                 <li>'System Properties' windows should open. At the right bottom you can see <b>Environment Variables...</b>, click on that button,
@@ -447,7 +448,118 @@ int main()
         <div class="header">
             <h1>Creating Go microservice</h1>
         </div>
-        <p>Working on it ... </p>
+        Okay, to start with <b>Go</b> we will have to configure few things. First and foremost you need to have <b>Go</b> configured and it ahs to be usable from PS or cmd.<br/>
+            To get all files needed to compile your proto and stuff like that you can fallow <a href="https://grpc.io/docs/quickstart/go.html">this tutorial</a> on how to download everything using Go. I will just drop all the commands in here, just in case: <ol><li><b>go version</b> which should return something higher or equal to 1.6</li>
+            <li><b>go get -u google.golang.org/grpc</b> to install grpc for Go</li>
+            <li><b>go get -u github.com/golang/protobuf/protoc-gen-go</b> to download Go plugin for protoc</li>
+            <li>after that you have to add <b>$GOPATH/bin</b> to your <b>PATH</b>. If you do not know how to do so <a href="#howto_PATH_var">go here for a quick guide</a> or try this command <b>export PATH=$PATH:$GOPATH/bin</b>. This will ensure you have your protoc gen visible for your <b>protoc compiler</b> but it is not necessary. I will show you how to generate your files without adding this to your <b>PATH</b>.</li>
+            </ol>
+            Nice. We got that settled. We can jump into compiling our proto file. 
+            <ol><li>I have created myself a folder with my Go project and 2 subfolders: 'client' and 'server'. I have also made one folder inside my <b>GOPATH</b> - <b>C:\Users\pshad\go\src\</b> and named it <b>TalkProject</b> so it I have that path in mind right now: <b>C:\Users\pshad\go\src\TalkProject</b>. Now I paste our <b>Talk.proto</b> into <b>TalkProject</b> folder and <b>navigate my PS</b> to this directory</li>
+            <li>now in PS use this command: <b>protoc Talk.proto --go_out=plugins=grpc:.</b> or if you haven't put $GOPATH\bin into you PATH you ahve to specify where <b>go plugin</b> is.<br/>
+                Your command should therefore look something like that: <b>protoc Talk.proto --plugin=protoc-gen-go=C:\Users\pshad\go\bin\protoc-gen-go.exe --go_out=plugins=grpc:.</b> which is a little longer but acutally I added one bonus thing which is <b>--plugin=protoc-gen-grpc='my path to that plugin'</b>. So if you had problems with your <b>GOPATH</b> use this one to generate your files</li>
+            </ol>
+          Okay, that's it for our proto stuff, we can now create our <b>Go gRPC server</b>. Navigate to your <b>server</b> subfolder in your project directory, for me it is <b>'D:\SOurceTree_Repo\gRPC-microservices-windows\Go\server'</b> and create a new file called <b>server.go</b>. Open it up and start writing your code! Your simplest server code sohuld look like that at the end:<br/>
+            <div>
+            <pre class="code_wrapper"><code>package main
+
+import (
+	pb "TalkProject"
+	"context"
+	"log"
+	"net"
+
+	"google.golang.org/grpc"
+)
+
+type server struct{}
+
+func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
+	log.Printf("Received message from %v at %v", in.Name, in.Date)
+	repl := "Hello " + in.Name
+	return &amp;pb.HelloReply{Message: repl}, nil
+}
+
+func main() {
+	lis, err := net.Listen("tcp", "0.0.0.0:50051")
+	if err != nil {
+		log.Fatalf("failed to listen: %v", err)
+	}
+	s := grpc.NewServer()
+	log.Printf("Server listening on: " + lis.Addr().String())
+	pb.RegisterGreeterServer(s, &amp;server{})
+	if err := s.Serve(lis); err != nil {
+		log.Fatalf("failed to serve: %v", err)
+	}
+}
+
+            </code></pre>
+            <div class="code_footer">                
+            <b>server.go</b>
+            </div>
+            </div>
+            Nice! What's letf you askin'? Client side!<br/>Navigate to your <b>client</b> subfolder and create <b>client.go</b> file. Open it up and start typing..: 
+            <div>
+            <pre class="code_wrapper"><code>package main
+
+import (
+	pb "TalkProject"
+	"bufio"
+	"context"
+	"fmt"
+	"log"
+	"os"
+	"time"
+
+	"google.golang.org/grpc"
+)
+
+const (
+	address = "127.0.0.1:50051"
+)
+
+func main() {
+	// Set up a connection to the server.
+	conn, err := grpc.Dial(address, grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+	defer conn.Close()
+	c := pb.NewGreeterClient(conn)
+
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Print("Enter your name: ")
+	name, _ := reader.ReadString('\n')
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	r, err := c.SayHello(ctx, &amp;pb.HelloRequest{Name: name, Date: time.Now().String()})
+	if err != nil {
+		log.Fatalf("could not send: %v", err)
+	}
+	log.Printf("Response: %s", r.Message)
+}
+
+            </code></pre>
+            <div class="code_footer">                
+            <b>client.go</b>
+            </div>
+        </div>
+            One last thing to do if you want to distribute them as .exe files. Right now in your PS you can run <ul><li><b>go run server.go</b></li><li><b>go run client.go</b></li></ul>
+            in the dorectory of server and client but this will only compile them once and will have to do so every time you do <b>go run</b>. A better approach will be to compile them to <b>.exe</b> files to save ourselves some time. To do so in the appropriate folder use these commands: <ul>
+            <li><b>go build -o client.exe</b> in <b>client directory</b></li>
+            <li><b>go build -o server.exe</b> in <b>server directory</b></li>
+            </ul>
+            And your exe files should be created in the directory of your <b>client</b> and <b>server</b>!<br/>
+            If you want to download full project <a href="https://github.com/TheFunnySunny/gRPC-microservices-windows">go to my github repo of Go gRPC.</a><br/>
+            If you have any suggestions or questions post them in the issues in git repo. Feedback is vastly appreacited!
+    </div>
+        <div class="entry general_div" id="rust_ref">
+        <div class="header">
+            <h1>Creating RUST microservice</h1>
+        </div>
+        <div class="general_text">
+        Building in process...
+        </div>
     </div>
     </div>
 </body>
