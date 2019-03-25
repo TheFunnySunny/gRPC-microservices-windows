@@ -22,7 +22,7 @@
                 <li><a href="#Csharp_ref">Creating C# .NET Framework microservice</a></li>
                 <li><a href="#cplus_ref">Creating C++ microservice</a></li>
                 <li><a href="#go_ref">Creating Go microservice</a></li>
-                <li><a href = "rust_ref">Creating RUST microservice</a></li>
+                <li><a href = "#rust_ref">Creating RUST microservice</a></li>
             </ol>
         </div>
     </div>
@@ -72,7 +72,7 @@
         Okay, lets actually get started. A <i><b>proto</b></i> file is something where all the magic of gRPC happens. Let me actually show You a simple <i><b>proto</b></i> file that we will be working with along this article. It is actually nearly the same as in the examples from gRPC tutorials but we want to keep it simple for now.
         </div>
         <div>
-        <pre class="code_wrapper"><code>
+        <pre class="code_wrapper"><code style="">
         syntax = "proto3";
 
         package Talk;
@@ -148,8 +148,8 @@
             We have downloaded vcpkg, now it is time for our <b>proto compiler.</b> 
             Here I have to confess that I do not acutally know IF you need to download CMake or no but you can figure it out. Fallow along and if you get any errors about CMake not existing you will have to install it too. Protoc is a part of Protobuf project maintained by Google itself. To download what we need fallow these few steps: 
             <ol>
-                <li>Open PS and type: <i>vcpkg install protobuf</i>,</li>
-                <li>download will start, just wait till it all finishes (it will take time, be patient. If you think it has frozen.. no, that just take some time, especcialy <b>building windows-rel</b>. You may need to turn off your antivirus for that).<b>Very important thing to note!!! Sometimes PS can get stucked while downloading this stuff. You can click on the PS and press any key on your keyboard so it receives some interrupt, it may speed things up. Anytime you think it takes too long try to do that trick.</b></li><li> then again open <b>Edit the System Environment Variables</b> like in the previous step,</li>
+                <li>Open PS and type: <b>vcpkg install protobuf</b>,</li>
+                <li>download will start, just wait till it all finishes (it will take time, be patient. If you think it has frozen.. no, that just take some time, especially <b>building windows-rel</b>. You may need to turn off your antivirus for that).<b>Very important thing to note!!! Sometimes PS can get stuck while downloading this stuff. You can click on the PS and press any key on your keyboard so it receives some interrupt, it may speed things up. Anytime you think it takes too long try to do that trick.</b></li><li> then again open <b>Edit the System Environment Variables</b> like in the previous step,</li>
                 <li>again navigate to <b>Path</b> in <b>System Variables</b> and Edit it,</li>
                 <li>click on <b>New</b> and add path to newly downloaded <b>protoc.exe</b>. <br/>Note: All things you download with vcpkg are put into <b>packages</b> folder inside vcpkg folder, so for me it is <i>C:\vcpkg\packages</i>.<br/> Full path to <b>protoc.exe</b> in my case is <i>C:\vcpkg\packages<b>\protobuf_x86-windows\tools\protobuf</b></i> and this is the path we will copy into <b>PATH</b> in <b>System Variables</b>, at the end I have that: <br/><img src="./images/protoc_path.JPG"/></li>
                 <li>now, <b>after reopening PS</b> and typing <b>protoc</b> you can see a list of commands for our use.</li>
@@ -407,7 +407,8 @@ public:
 		{
 			std::cout &lt;&lt; "\r";
 			std::cout &lt;&lt; status.error_code();
-                        std::cout &lt;&lt; ": " &lt;&lt; status.error_message() &lt;&lt; std::endl;
+                        std::cout &lt;&lt; ": " &lt;&lt; status.error_message();
+                        std::cout &lt;&lt; std::endl;
 		}
 	}
 private:
@@ -448,6 +449,7 @@ int main()
         <div class="header">
             <h1>Creating Go microservice</h1>
         </div>
+            <div class="general_text">
         Okay, to start with <b>Go</b> we will have to configure few things. First and foremost you need to have <b>Go</b> configured and it ahs to be usable from PS or cmd.<br/>
             To get all files needed to compile your proto and stuff like that you can fallow <a href="https://grpc.io/docs/quickstart/go.html">this tutorial</a> on how to download everything using Go. I will just drop all the commands in here, just in case: <ol><li><b>go version</b> which should return something higher or equal to 1.6</li>
             <li><b>go get -u google.golang.org/grpc</b> to install grpc for Go</li>
@@ -459,7 +461,7 @@ int main()
             <li>now in PS use this command: <b>protoc Talk.proto --go_out=plugins=grpc:.</b> or if you haven't put $GOPATH\bin into you PATH you ahve to specify where <b>go plugin</b> is.<br/>
                 Your command should therefore look something like that: <b>protoc Talk.proto --plugin=protoc-gen-go=C:\Users\pshad\go\bin\protoc-gen-go.exe --go_out=plugins=grpc:.</b> which is a little longer but acutally I added one bonus thing which is <b>--plugin=protoc-gen-grpc='my path to that plugin'</b>. So if you had problems with your <b>GOPATH</b> use this one to generate your files</li>
             </ol>
-          Okay, that's it for our proto stuff, we can now create our <b>Go gRPC server</b>. Navigate to your <b>server</b> subfolder in your project directory, for me it is <b>'D:\SOurceTree_Repo\gRPC-microservices-windows\Go\server'</b> and create a new file called <b>server.go</b>. Open it up and start writing your code! Your simplest server code sohuld look like that at the end:<br/>
+          Okay, that's it for our proto stuff, we can now create our <b>Go gRPC server</b>. Navigate to your <b>server</b> subfolder in your project directory, for me it is <b>'D:\SOurceTree_Repo\gRPC-microservices-windows\Go\server'</b> and create a new file called <b>server.go</b>. Open it up and start writing your code! Your simplest server code sohuld look like that at the end:<br/></div>
             <div>
             <pre class="code_wrapper"><code>package main
 
@@ -498,7 +500,8 @@ func main() {
             <b>server.go</b>
             </div>
             </div>
-            Nice! What's letf you askin'? Client side!<br/>Navigate to your <b>client</b> subfolder and create <b>client.go</b> file. Open it up and start typing..: 
+            <div class="general_text">
+            Nice! What's letf you askin'? Client side!<br/>Navigate to your <b>client</b> subfolder and create <b>client.go</b> file. Open it up and start typing..: </div>
             <div>
             <pre class="code_wrapper"><code>package main
 
@@ -543,24 +546,238 @@ func main() {
             <div class="code_footer">                
             <b>client.go</b>
             </div>
-        </div>
+        </div><div class="general_text">
             One last thing to do if you want to distribute them as .exe files. Right now in your PS you can run <ul><li><b>go run server.go</b></li><li><b>go run client.go</b></li></ul>
-            in the dorectory of server and client but this will only compile them once and will have to do so every time you do <b>go run</b>. A better approach will be to compile them to <b>.exe</b> files to save ourselves some time. To do so in the appropriate folder use these commands: <ul>
+            in the directory of server and client but this will only compile them once and will have to do so every time you do <b>go run</b>. A better approach will be to compile them to <b>.exe</b> files to save ourselves some time. To do so in the appropriate folder use these commands: <ul>
             <li><b>go build -o client.exe</b> in <b>client directory</b></li>
             <li><b>go build -o server.exe</b> in <b>server directory</b></li>
             </ul>
             And your exe files should be created in the directory of your <b>client</b> and <b>server</b>!<br/>
             If you want to download full project <a href="https://github.com/TheFunnySunny/gRPC-microservices-windows">go to my github repo of Go gRPC.</a><br/>
-            If you have any suggestions or questions post them in the issues in git repo. Feedback is vastly appreacited!
+            If you have any suggestions or questions post them in the issues in git repo. Feedback is vastly appreacited!</div>
     </div>
         <div class="entry general_div" id="rust_ref">
         <div class="header">
             <h1>Creating RUST microservice</h1>
         </div>
         <div class="general_text">
-        Building in process...
+        After three languages comes the last one and I gotta say - this one I have seen only when developing a simple gRPC server and I have never ever programmed anything in RUST but I know how to make a <b>RUST gRPC microservice</b> so that might me useful for <b>you.</b><br/> 
+            To start with you will need <b>cargo</b> that you can use from your <b>PS</b> or <b>cmd</b>. I have mine installed already because I've got <b>Microsoft Visual Studio Tools</b> on my PC, you can get one too to save some time or check <a href="https://www.rust-lang.org/tools/install">this RUST site on how to install <b>cargo</b> on your PC.</a> After you have that sorted out it is time for our solution to be created, configured and compiled, <b>lets do it!</b><br/>
+            First things first, we need <b>RUST gRPC</b> for that because we can't use the regular one from gRPC itself. We have at least three choices but for this project I've chosen <a href="https://github.com/stepancheg/grpc-rust">this one.</a> Download it somewhere you can easly find it. For me, I will put that in <b>C:\Users\pshad\Desktop\Rust_Tut</b>. I will refer to this path in this tutorial so if you want to reproduce later keep in mind that this is where I stopre my gRPC things. <br/>
+            Okay, after we have that we need a folder for our solution. I've got mine in <b>D:\SOurceTree_Repo\gRPC-microservices-windows\RUST</b>. We should strt with creating subfolder stucture for our project. <ul>
+            <li>Create folder named <b>src</b></li>
+            <li>in <b>src</b> create a folder named <b>bin</b></li>
+            <li>Your file structure should look like this:<br/><img src="./images/RUST_Tree.JPG"/></li></ul>
+            Now we should start with putting some code together. Let's first create all the files in directories adn we will modify them afterwards:
+            <ul>
+                <li>in your root folder of the project (for me it is D:\SOurceTree_Repo\gRPC-microservices-windows\RUST) create these files: <b>Cargo.toml</b>, <b>build.rs</b> and copy our <b>Talk.proto</b> in there</li>
+                <li>in the <b>src</b> subfolder create file <b>lib.rs</b> and well, you need a file called <b>foobar.com.p12</b>. You can <b><a href="https://stackoverflow.com/questions/18981848/how-to-create-p12-file-using-openssl?noredirect=1&lq=1">generate one using openssl</a></b> or get one from the repo of this project <a href="https://github.com/TheFunnySunny/gRPC-microservices-windows">right here.</a></li>
+                <li>and last but not least create <b>Talking_client.rs</b> and <b>Talking_server.rs</b> in your <b>bin</b> subfolder</li>
+            </ul>
+            Now we have to create all the code needed. Let's go! 
+            </div><div>
+            <pre class="code_wrapper"><code>[package]
+name = "Talk_microservice"
+version = "1.0.0"
+authors = ["Pawel Staszkiewicz"]
+publish = false
+
+[lib]
+doctest = false
+test = false
+
+[dependencies.grpc]
+path = "C:/Users/pshad/Desktop/Rust_Tut/grpc-rust/grpc"
+[dependencies.grpc-protobuf]
+path = "C:/Users/pshad/Desktop/Rust_Tut/grpc-rust/grpc-protobuf"
+
+[dependencies]
+protobuf        = "2"
+futures         = "0.1.*"
+futures-cpupool = "0.1.*"
+tls-api            = "0.1.*"
+tls-api-native-tls = "0.1.*"
+httpbis         = { git = "https://github.com/stepancheg/rust-http2" }
+env_logger      = "~0.5"
+
+[build-dependencies]
+protoc-rust-grpc = { path = "C:/Users/pshad/Desktop/Rust_Tut/grpc-rust/protoc-rust-grpc" }
+
+[[bin]]
+name = "Talking_client"
+test = false
+
+[[bin]]
+name = "Talking_server"
+test = false</code></pre>
+            <div class="code_footer">                
+            <b>Cargo.toml</b>
+            </div>
+        </div><div class="general_text"><br/>
+            In short: <ul>
+            <li>In <b>package</b> we specify the name of our package. The rest is non-essential</li>
+            <li><b>dependencies</b> point to our <b>grpc-rust</b> files that we have downloaded at the beginning. Nake sure you write them correctly</li>
+            <li><b>dependencies</b> - well, we need those so you know, just copy-paste</li>
+            <li><b>build-dependencies</b> is another directory form <b>grpc-rust</b> so just specify the right path</li>
+            <li>in <b>bin</b> we specify the names of our files that we will compile, make sure they match these names. In our case  we have <b>Talking_client</b> and <b>Talking_server</b>. Do not put .rs at the end, just plain names</li></ul>
+            So that's sorted out. Now it's time for <b>build.rs</b>:
+            </div>
+            <div>
+            <pre class="code_wrapper"><code>extern crate protoc_rust_grpc;
+
+fn main() {
+    protoc_rust_grpc::run(protoc_rust_grpc::Args {
+        out_dir: "src",
+        includes: &amp;[],
+        input: &amp;["Talk.proto"],
+        rust_protobuf: true,
+        ..Default::default()
+    }).expect("protoc-rust-grpc");
+}       </code></pre>
+            <div class="code_footer">                
+            <b>build.rs</b>
+            </div>
+        </div>
+            <div class="general_text">
+                We don't need a lot of comments on that, this file will create <b>stubs</b> for our client and server from <b>Talk.proto</b><br/>
+                Next up: <b>src/lib.rs</b>, <b>Talking_client.rs</b> and <b>Talking_server.rs</b>
+        </div>
+            <div>
+            <pre class="code_wrapper"><code>extern crate futures;
+extern crate futures_cpupool;
+extern crate grpc;
+extern crate grpc_protobuf;
+extern crate protobuf;
+extern crate tls_api;
+
+pub mod Talk;
+pub mod Talk_grpc;</code></pre>
+            <div class="code_footer">                
+            <b>lib.rs</b>
+            </div>
+        </div><br/>
+            <div>
+            <pre class="code_wrapper"><code>extern crate futures;
+extern crate grpc;
+extern crate Talk_microservice;
+extern crate httpbis;
+extern crate tls_api;
+extern crate tls_api_native_tls;
+extern crate env_logger;
+
+use Talk_microservice::Talk::*;
+use Talk_microservice::Talk_grpc::*;
+use grpc::ClientStubExt;
+
+fn main() {
+    env_logger::init();
+
+    let name = "Paul".to_string();
+
+    let port = 50051;
+
+    let client_conf = Default::default();
+
+    let client = GreeterClient::new_plain("127.0.0.1", port, client_conf).unwrap();
+
+    let mut req = HelloRequest::new();
+    req.set_name(name);
+
+    let resp = client.say_hello(grpc::RequestOptions::new(), req);
+
+    println!("{:?}", resp.wait());
+}            </code></pre>
+            <div class="code_footer">                
+            <b>Talking_client.rs</b>
+            </div>
+        </div>
+            <br/>
+            <div>
+            <pre class="code_wrapper"><code>extern crate futures;
+extern crate grpc;
+extern crate Talk_microservice;
+extern crate tls_api;
+extern crate tls_api_native_tls;
+
+use std::env;
+use std::thread;
+use Talk_microservice::Talk::*;
+use Talk_microservice::Talk_grpc::*;
+use tls_api::TlsAcceptorBuilder;
+use grpc::ServerHandlerContext;
+use grpc::ServerRequestSingle;
+use grpc::ServerResponseUnarySink;
+
+struct GreeterImpl;
+
+impl Greeter for GreeterImpl {
+    fn say_hello(&amp;self, _: ServerHandlerContext, req: 
+    ServerRequestSingle&lt;HelloRequest&gt;, resp: ServerResponseUnarySink&lt;HelloReply&gt;) -> 
+    grpc::Result&lt;()&gt; {
+        let mut r = HelloReply::new();
+        let name = if req.message.get_name().is_empty() {
+            "world"
+        } else {
+            req.message.get_name()
+        };
+        println!("greeting request from {}", name);
+        r.set_message(format!("Hello {}", name));
+        resp.finish(r)
+    }
+}
+
+fn test_tls_acceptor() -> tls_api_native_tls::TlsAcceptor {
+    let pkcs12 = include_bytes!("../foobar.com.p12");
+    let builder = tls_api_native_tls::TlsAcceptorBuilder::from_pkcs12
+    (pkcs12, "mypass").unwrap();
+    builder.build().unwrap()
+}
+fn is_tls() -> bool {
+    env::args().any(|a| a == "--tls")
+}
+fn main() {
+    let tls = is_tls();
+
+    let port = if !tls { 50051 } else { 50052 };
+
+    let mut server = grpc::ServerBuilder::new();
+    server.http.set_port(port);
+    server.add_service(GreeterServer::new_service_def(GreeterImpl));
+    if tls {
+        server.http.set_tls(test_tls_acceptor());
+    }
+    let _server = server.build().expect("server");
+
+    println!(
+        "greeter server started on port {} {}",
+        port,
+        if tls { "with tls" } else { "without tls" }
+    );
+
+    loop {
+        thread::park();
+    }
+} </code></pre>
+            <div class="code_footer">                
+            <b>Talking_server.rs</b>
+            </div>
+        </div>
+            <div class="general_text">
+                And that is all for our files. One last thing to do and we have our <b>exe</b> files ready to get going!<br/>
+                In the main root of your solution (for me it is D:\SOurceTree_Repo\gRPC-microservices-windows\RUST), the place where you have <b>Cargo.toml</b> run <b>"cargo build"</b> and wait for everything to complete. After that your <b>exe</b> files should be in <b>target -> debug</b>. You might get some warnings about names without snake cases but yeah, that's my fault actually. Nothing to be worried about.<br/>
+                When opening client normally it will just pop instantly so you may consider running it from the console. After all on the server side you should see this:<br/><img src="./images/rust_server.JPG"/>
+                <br/>
+                That's it! All files and code can be found <a href="https://github.com/TheFunnySunny/gRPC-microservices-windows">on this project repository under RUST subdirectory.</a>
         </div>
     </div>
+      <div class="general_div" id="summary_ref">
+        <div class="header">
+            <h1>Summary</h1>
+        </div>
+        <div class="general_text">
+           
+          </div>      
+    </div>  
     </div>
 </body>
 </html>

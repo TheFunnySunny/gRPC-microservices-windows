@@ -24,7 +24,7 @@
 *.db
 ipch/
 obj/
-[Bb]in
+#[Bb]in
 [Dd]ebug*/
 [Rr]elease*/
 TemporaryGeneratedFile
@@ -59,3 +59,4 @@ db.lock
 *.exe
 *.out
 *.app
+RUST/target/
